@@ -21,9 +21,10 @@ Candy Plus is a standalone Windows frontend for `yt-dlp` and `FFmpeg` with more 
 
 ## Screenshots
 
-<img width="1920" height="1030" alt="screenshot2" src="https://github.com/user-attachments/assets/1ecc97d4-360f-463b-8075-b66420ff092f" />
+<img width="1920" height="1021" alt="screenshot1" src="https://github.com/user-attachments/assets/9f191a48-62f6-4b6f-aec6-2f676657cc77" />
+<img width="1920" height="1028" alt="screenshot2" src="https://github.com/user-attachments/assets/bc8d031d-1753-480a-93e0-0e55427f15d0" />
 
-<img width="1920" height="1024" alt="screenshot1" src="https://github.com/user-attachments/assets/f64ef5b8-794a-4f39-8ca4-d614447d76f9" />
+
 
 ## Installation
 
