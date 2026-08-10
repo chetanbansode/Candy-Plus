@@ -10,6 +10,8 @@
 
 Candy Plus is a standalone Windows frontend for `yt-dlp` and `FFmpeg` with more advanced controls and features compared to the standard Candy version. It abstracts command-line operations into a seamless graphical interface, allowing users to parse, select, and download high-quality video and audio streams into standard media containers without requiring CLI knowledge.
 
+> **Note**: This build is based on the classic version of [Candy](https://github.com/chetanbansode/Candy).
+
 ## Features
 
 - **Advanced Format Parsing**: Automatically fetches and categorizes all available video and audio streams for a given URL with fine-grained control.
