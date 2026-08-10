@@ -29,7 +29,7 @@ End-users can download the pre-compiled installer:
 
 ## Building from Source
 
-To compile the application from source, you will need the [.NET 8.0 SDK](https://dotnet.microsoft.com/en-us/download).
+To compile the application from source, you will need the [.NET 8.0 SDK](https://dotnet.microsoft.com/en-us/download)
 
 ### 1. Build the Executable
 
@@ -45,8 +45,8 @@ dotnet publish -c ReleasePlus -r win-x64 --self-contained true -p:PublishSingleF
 
 Candy Plus relies on external binaries that are **not** bundled in this source repository due to their size. Before compiling the Windows Installer, you must acquire these binaries manually:
 
-1. Download the latest `yt-dlp.exe` from [yt-dlp releases](https://github.com/yt-dlp/yt-dlp/releases).
-2. Download the latest `ffmpeg.exe` and `ffprobe.exe` from [FFmpeg Windows builds](https://ffmpeg.org/download.html).
+1. Download the latest `yt-dlp.exe` from [yt-dlp releases](https://github.com/yt-dlp/yt-dlp/releases)
+2. Download the latest `ffmpeg.exe` and `ffprobe.exe` from [FFmpeg Windows builds](https://ffmpeg.org/download.html)
 3. Place all three `.exe` files into the following directory:
    `bin\ReleasePlus\net8.0-windows\win-x64\publish\`
 
@@ -64,4 +64,4 @@ Candy Plus is a graphical wrapper. All core downloading and media processing cap
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE).
+This project is licensed under the [MIT License](LICENSE)
