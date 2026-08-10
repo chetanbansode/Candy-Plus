@@ -19,6 +19,12 @@ Candy Plus is a standalone Windows frontend for `yt-dlp` and `FFmpeg` with more 
 - **Metadata Support**: Optional embedding of creator subtitles and stream metadata directly into the output file.
 - **Plus Exclusive Capabilities**: Advanced configuration and options for power users looking to get the most out of `yt-dlp`.
 
+## Screenshots
+
+<img width="1920" height="1030" alt="screenshot2" src="https://github.com/user-attachments/assets/1ecc97d4-360f-463b-8075-b66420ff092f" />
+
+<img width="1920" height="1024" alt="screenshot1" src="https://github.com/user-attachments/assets/f64ef5b8-794a-4f39-8ca4-d614447d76f9" />
+
 ## Installation
 
 End-users can download the pre-compiled installer:
