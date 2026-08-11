@@ -1,7 +1,7 @@
 <div align="center">
   <img src="icons/universal.png" alt="Candy Plus Logo" width="128"/>
   <h1>Candy Plus</h1>
-  <p>An advanced, modern graphical user interface for yt-dlp built with C# and .NET 8.0.</p>
+  <p>An advanced, modern graphical user interface for yt-dlp built with C# and .NET 8.0</p>
 </div>
 
 ---
