@@ -38,7 +38,7 @@ Candy Plus is a standalone Windows frontend for `yt-dlp` and `FFmpeg` with more 
 End-users can download the pre-compiled installer:
 
 1. Navigate to the [Releases](../../releases) section of this repository.
-2. Download `CandyPlusInstaller.exe`.
+2. Download `Candy_Plus-Setup-x64.exe`.
 3. Run the installer. All dependencies (including `yt-dlp` and `FFmpeg`) are bundled internally.
 
 ## Building from Source
