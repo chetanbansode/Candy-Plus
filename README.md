@@ -53,7 +53,7 @@ Clone the repository and run the following command in the project root to produc
 dotnet publish -c ReleasePlus -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeAllContentForSelfExtract=true
 ```
 
-*(Note: We use the `ReleasePlus` configuration to target the Candy Plus specific build settings)*
+(Note: Use the `ReleasePlus` configuration to target the Candy Plus specific build settings)
 
 ### 2. Supply External Binaries
 
