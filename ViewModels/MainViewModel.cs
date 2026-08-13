@@ -46,13 +46,11 @@ public partial class MainViewModel : ObservableObject
         : IsVideoMode 
             ? "Paste the link to the video you want to download" 
             : "Paste the link to the audio you want to download";
-    public string ProcessingText => App.IsPlusVersion
-        ? "Fetching all formats..."
-        : DownloadMode == DownloadMode.Manual
-            ? "Fetching all available formats..."
-            : IsVideoMode 
-                ? "Fetching video formats..." 
-                : "Fetching audio formats...";
+    public string ProcessingText => DownloadMode == DownloadMode.Manual
+        ? (App.IsPlusVersion ? "Fetching all formats..." : "Fetching all available formats...")
+        : IsVideoMode 
+            ? "Fetching video formats..." 
+            : "Fetching audio formats...";
 
     [ObservableProperty] private AppSettings _appSettings = new();
     
@@ -139,7 +137,7 @@ public partial class MainViewModel : ObservableObject
 
     // Remuxer properties
     public string AppName => App.IsPlusVersion ? "Candy Plus" : "Candy";
-    public string AppVersion => App.IsPlusVersion ? "1.0.0 Beta" : "1.0.1";
+    public string AppVersion => App.IsPlusVersion ? "1.0.1 Beta" : "1.0.1";
     public string AppDescription => App.IsPlusVersion 
         ? "An advanced interface for downloading audio and video with manual format selection, remuxing, and advanced options powered by yt-dlp."
         : "A simple and clean interface for downloading audio and video from YouTube.";
@@ -155,7 +153,7 @@ public partial class MainViewModel : ObservableObject
     private List<AudioFormatOption> _allFormats = new();
     private List<YtDlpGui.Models.VideoFormatOption> _allVideoFormats = new();
     private string _bestAudioFormatId = string.Empty;
-    private YtDlpService _ytDlpService = new();
+    private DownloadService _ytDlpService = new();
     private SettingsService _settingsService = new();
     private CancellationTokenSource? _downloadCts;
     private Stopwatch _stopwatch = new();
@@ -247,6 +245,8 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     private void GoBack()
     {
+        ErrorMessage = string.Empty;
+        
         if (CurrentPage == AppPage.UrlInput)
         {
             CurrentPage = AppPage.Home;
@@ -327,6 +327,7 @@ public partial class MainViewModel : ObservableObject
 
                 ManualFormatFilter = "All";
                 ApplyManualFilter();
+                UpdateManualExpectedSize();
                 CurrentPage = AppPage.ManualOptions;
             }
             else
@@ -437,6 +438,49 @@ public partial class MainViewModel : ObservableObject
         {
             ExpectedFileSizeBytes = best.FileSize;
             ExpectedFileSizeLabel = best.FileSize > 0 ? $"Approximate Size: {best.FileSizeStr}" : "Approximate Size: Unknown";
+        }
+    }
+    
+    partial void OnSelectedManualFormatChanged(ManualFormatOption? value)
+    {
+        UpdateManualExpectedSize();
+    }
+    partial void OnSelectedVideoFormatChanged(ManualFormatOption? value)
+    {
+        UpdateManualExpectedSize();
+    }
+    partial void OnSelectedAudioFormatChanged(ManualFormatOption? value)
+    {
+        UpdateManualExpectedSize();
+    }
+    partial void OnIsRemuxerEnabledChanged(bool value)
+    {
+        UpdateManualExpectedSize();
+    }
+    
+    private void UpdateManualExpectedSize()
+    {
+        if (IsRemuxerEnabled)
+        {
+            if (SelectedVideoFormat == null && SelectedAudioFormat == null)
+                ExpectedFileSizeBytes = 0;
+            else
+                ExpectedFileSizeBytes = (SelectedVideoFormat?.FileSizeRaw ?? 0) + (SelectedAudioFormat?.FileSizeRaw ?? 0);
+        }
+        else
+        {
+            ExpectedFileSizeBytes = SelectedManualFormat?.FileSizeRaw ?? 0;
+        }
+
+        if (ExpectedFileSizeBytes > 0)
+        {
+            ExpectedFileSizeLabel = ExpectedFileSizeBytes >= 1_073_741_824 ? $"Approximate Size: ~{ExpectedFileSizeBytes / 1_073_741_824.0:F1}GB" :
+                                    ExpectedFileSizeBytes >= 1_048_576 ? $"Approximate Size: ~{ExpectedFileSizeBytes / 1_048_576.0:F1}MB" :
+                                    $"Approximate Size: ~{ExpectedFileSizeBytes / 1024.0:F0}KB";
+        }
+        else
+        {
+            ExpectedFileSizeLabel = string.Empty;
         }
     }
 
@@ -562,6 +606,8 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     private async Task StartDownload()
     {
+        if (IsDownloading) return;
+
         if (string.IsNullOrWhiteSpace(VideoUrl) || !VideoUrl.Trim().StartsWith("http", StringComparison.OrdinalIgnoreCase))
         {
             ErrorMessage = "Invalid video URL. Please check the link and try again.";
@@ -681,7 +727,7 @@ public partial class MainViewModel : ObservableObject
 
                 if (IsRemuxerEnabled)
                 {
-                    if (!YtDlpGui.Services.YtDlpService.IsFFmpegAvailable())
+                    if (!YtDlpGui.Services.DownloadService.IsFFmpegAvailable())
                     {
                         System.Windows.MessageBox.Show("FFmpeg is required to combine video and audio tracks. Please place ffmpeg.exe in the application folder.", "FFmpeg Missing", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
                         return;
@@ -766,16 +812,31 @@ public partial class MainViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            ErrorMessage = ex.Message;
             CurrentPage = AppPage.UrlInput;
-
-            if (ex.Message.Contains("(Skipped)"))
+            
+            if (ex is System.IO.IOException || ex is UnauthorizedAccessException || 
+                ex.Message.Contains("Access to the path") || 
+                ex.Message.Contains("used by another process") || 
+                ex.Message.Contains("denied"))
             {
+                ErrorMessage = "";
                 System.Windows.MessageBox.Show(
-                    "The file already exists in the destination folder.", 
-                    "Download Skipped", 
+                    "Cannot overwrite the file as the file is already in use by another app.", 
+                    "File In Use", 
                     System.Windows.MessageBoxButton.OK, 
-                    System.Windows.MessageBoxImage.Information);
+                    System.Windows.MessageBoxImage.Warning);
+            }
+            else
+            {
+                ErrorMessage = ex.Message;
+                if (ex.Message.Contains("(Skipped)"))
+                {
+                    System.Windows.MessageBox.Show(
+                        "The file already exists in the destination folder.", 
+                        "Download Skipped", 
+                        System.Windows.MessageBoxButton.OK, 
+                        System.Windows.MessageBoxImage.Information);
+                }
             }
         }
         finally
@@ -795,9 +856,10 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     private void CancelDownload()
     {
+        var cts = _downloadCts;
         Task.Run(() => 
         {
-            try { _downloadCts?.Cancel(); } catch { }
+            try { cts?.Cancel(); } catch { }
             try { _ytDlpService.Cancel(); } catch { }
         });
     }

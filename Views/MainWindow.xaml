@@ -153,7 +153,7 @@
                                             <Setter Property="ToolTip" Value="Available in Candy Plus"/>
                                         </DataTrigger>
                                         <DataTrigger Binding="{Binding IsPlusVersion}" Value="True">
-                                            <Setter Property="ToolTip" Value=""/>
+                                            <Setter Property="ToolTip" Value="{x:Null}"/>
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>

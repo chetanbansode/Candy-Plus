@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <RootNamespace>YtDlpGui</RootNamespace>
+    <AssemblyName>Candy</AssemblyName>
+    <Product>Candy</Product>
+    <Description>Candy</Description>
+    <Title>Candy</Title>
+    <AssemblyTitle>Candy</AssemblyTitle>
+    <Copyright>Chetan Bansode</Copyright>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <ApplicationIcon>universal.ico</ApplicationIcon>
+    <Configurations>Debug;Release;DebugPlus;ReleasePlus</Configurations>
+  </PropertyGroup>
+
+  <!-- Conditional Build Properties for Candy Plus -->
+  <PropertyGroup Condition="'$(Configuration)' == 'DebugPlus' Or '$(Configuration)' == 'ReleasePlus'">
+    <DefineConstants>$(DefineConstants);CANDY_PLUS</DefineConstants>
+    <AssemblyName>CandyPlus</AssemblyName>
+    <Product>Candy Plus</Product>
+    <Title>Candy Plus</Title>
+    <AssemblyTitle>Candy Plus</AssemblyTitle>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
+    <PackageReference Include="WPF-UI" Version="4.3.0" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Resource Include="universal.ico" />
+    <Resource Include="icons\universal.png" />
+  </ItemGroup>
+
+</Project>
